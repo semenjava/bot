@@ -1,0 +1,26 @@
+{
+    "name": "test/bot",
+    "description": "test project parse site",
+    "type": "project",
+    "authors": [
+        {
+            "name": "s.yasinskiy",
+            "email": "s.yasinskiy@tech.slds.com.ua"
+        }
+    ],
+    "require": {
+        "kub-at/php-simple-html-dom-parser": "^1.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src\\classes"
+        },
+        "psr-0": {
+            "View\\": "lib/view",
+            "Http\\": "lib/http"
+        },
+        "files": [
+            "config.php"
+        ]
+    }
+}
