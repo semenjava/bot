@@ -6,7 +6,8 @@ use App\Models\Bot\Abs\FileAbstract;
 
 class CsvFileBot extends FileAbstract
 {
-    private $filenamecsv;
+    public $filenamecsv;
+    public $dir = '/../../../../public/';
     
     public function __construct($data) {
         $this->createFileName();

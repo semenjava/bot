@@ -6,7 +6,8 @@ use App\Models\Bot\Abs\FileAbstract;
 
 class HtmlFileBot extends FileAbstract{
     
-    private $filenamehtml;
+    public $filenamehtml;
+    public $dir = '/../../../../public/';
     public $data;
     
     public function __construct($data) {

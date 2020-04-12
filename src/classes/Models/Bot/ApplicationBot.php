@@ -42,62 +42,10 @@ class ApplicationBot {
 
     public function maping() {
 
-        foreach ($this->parse->domHtml->find('a') as $element) {
-            $link = new LinkBot(new HrefBot($element->href));
-            
-            if(!empty($link->link->getParseUrl()['host'])) {
-                $host = $link->link->getParseUrl()['host'];
-            } else {
-                $host = false;
-            }
-
-            if (BotUrlHelper::isSameSite($host, $this->parse->request->getHost()) &&
-                    !BotUrlHelper::isRepeat($element->href, $this->parse->request->getUrls())) {
-
-                //start connect
-                $this->parse->request->setConnectTimeout(time());
-                $link->startConnect($this->parse->request->getConnectTimeout());
-
-                $countImg  = 0;
-                if (BotUrlHelper::url_exists($link->link->getLink())) {
-                    $countImg = count($this->parse->domHtml->getImgs());
-                }
-
-                //end connect
-                $this->parse->request->setTimeout(time());
-                $link->endConnect($this->parse->request->getTimeout());
-
-                $this->parse->request->addUrl($element->href);
-                
-                $this->data[] = (object)[
-                    'url' => $link->link->getLink(),
-                    'countImg' => $countImg,
-                    'end' => $link->end,
-                    'start' => $link->start
-                ];
-            }
-            unset($link);
-        }
-
-        foreach ($this->parse->request->getUrls() as $url) {
-            $this->analise($url);
-        }
-    }
-
-    /*
-     * Link Analysis with Depth
-     * 
-     * @return void
-     */
-
-    public function analise($url, $level = 0) {
-        if ($level <= $this->deep && BotUrlHelper::url_exists($url)) {
-            $dom = $this->parse->createDomByLink($url);
-            
-            foreach ($dom->find('a') as $element) {
+        if(count($this->parse->domHtml->find('a'))){
+            foreach ($this->parse->domHtml->find('a') as $element) {
                 $link = new LinkBot(new HrefBot($element->href));
-                
-                
+
                 if(!empty($link->link->getParseUrl()['host'])) {
                     $host = $link->link->getParseUrl()['host'];
                 } else {
@@ -110,7 +58,7 @@ class ApplicationBot {
                     //start connect
                     $this->parse->request->setConnectTimeout(time());
                     $link->startConnect($this->parse->request->getConnectTimeout());
-                    
+
                     $countImg  = 0;
                     if (BotUrlHelper::url_exists($link->link->getLink())) {
                         $countImg = count($this->parse->domHtml->getImgs());
@@ -121,17 +69,73 @@ class ApplicationBot {
                     $link->endConnect($this->parse->request->getTimeout());
 
                     $this->parse->request->addUrl($element->href);
+
                     $this->data[] = (object)[
                         'url' => $link->link->getLink(),
                         'countImg' => $countImg,
                         'end' => $link->end,
                         'start' => $link->start
                     ];
-                    $this->analise($element->href, $level++);
                 }
                 unset($link);
             }
-            unset($dom);
+        }
+
+        foreach ($this->parse->request->getUrls() as $url) {
+            $this->analise($url);
+        }
+        
+    }
+
+    /*
+     * Link Analysis with Depth
+     * 
+     * @return void
+     */
+
+    public function analise($url, $level = 0) {
+        if ($this->deep > $level  && BotUrlHelper::url_exists($url)) {
+            $dom = $this->parse->createDomByLink($url);
+
+            if(count($dom->find('a'))){
+                foreach ($dom->find('a') as $element) {
+                    $link = new LinkBot(new HrefBot($element->href));
+
+                    if(!empty($link->link->getParseUrl()['host'])) {
+                        $host = $link->link->getParseUrl()['host'];
+                    } else {
+                        $host = false;
+                    }
+
+                    if (BotUrlHelper::isSameSite($host, $this->parse->request->getHost()) &&
+                            !BotUrlHelper::isRepeat($element->href, $this->parse->request->getUrls())) {
+
+                        //start connect
+                        $this->parse->request->setConnectTimeout(time());
+                        $link->startConnect($this->parse->request->getConnectTimeout());
+
+                        $countImg  = 0;
+                        if (BotUrlHelper::url_exists($link->link->getLink())) {
+                            $countImg = count($this->parse->domHtml->getImgs());
+                        }
+
+                        //end connect
+                        $this->parse->request->setTimeout(time());
+                        $link->endConnect($this->parse->request->getTimeout());
+
+                        $this->parse->request->addUrl($element->href);
+                        $this->data[] = (object)[
+                            'url' => $link->link->getLink(),
+                            'countImg' => $countImg,
+                            'end' => $link->end,
+                            'start' => $link->start
+                        ];
+                        $this->analise($element->href, $level++);
+                    }
+                    unset($link);
+                }
+                unset($dom);
+            }
         }
     }
 }

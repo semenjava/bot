@@ -59,7 +59,7 @@ class HomeController extends Controller{
         $table = new ViewHelperTable($view);
         
         $content = $table->build_table($htm->getData(), $csv->getFilename());
-        file_put_contents(__DIR__.$this->dir.$htm->getFilename(), $content);
+        file_put_contents(__DIR__.'/../../../public/'.$htm->getFilename(), $content);
         
         $htm->openFile($htm->getFilename());
     }

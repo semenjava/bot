@@ -36,11 +36,18 @@ class BotUrlHelper {
         if (empty($url))
             return false;
 
-        $headers = @get_headers($url);
-        if (strpos($headers[0], '200') === false)
-            return false;
-        else
-            return true;
+        $exists = true;
+        $file_headers = @get_headers($URL);
+        $InvalidHeaders = array('404', '403', '500');
+        foreach($InvalidHeaders as $HeaderVal)
+        {
+                if(strstr($file_headers[0], $HeaderVal))
+                {
+                        $exists = false;
+                        break;
+                }
+        }
+        return $exists;
     }
     
 }

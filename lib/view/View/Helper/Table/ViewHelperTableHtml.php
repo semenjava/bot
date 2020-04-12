@@ -20,9 +20,11 @@ class ViewHelperTableHtml {
     
     public static function getArgs ($param) {
         $titles = $values = [];
-        foreach ($param as $title => $value) {
-            $titles[] = $title;
-            $values[] = $value;
+        foreach ($param as $key => $value) {
+            foreach ($value as $title => $val) {
+                $titles[$key][] = $title;
+                $values[$key][] = $value;
+            }
         }
         return [$titles, $values];
     }

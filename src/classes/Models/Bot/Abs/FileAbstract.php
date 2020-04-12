@@ -2,12 +2,9 @@
 namespace App\Models\Bot\Abs;
 
 abstract class FileAbstract {
-    
-    public $dir = '/../../../../public/';
-
 
     abstract function createFileName();
-    abstract function generationFiles();
+    abstract function generationFiles($data);
     abstract function getFilename();
 
 
@@ -17,8 +14,8 @@ abstract class FileAbstract {
      * @return void
      */
     public function openFile() {
-        if(file_exists(__DIR__.$this->dir.$this->getFilename())) {
-            header('Location: '.$_SERVER['HTTP_REFERER'].$this->getFilename());
+        if(file_exists(__DIR__.'/../../../../../public/'.$this->getFilename())) {
+            header('Location: /'.$this->getFilename());
             exit;
         }
     }

@@ -14,14 +14,16 @@ class ViewHelperTable extends ViewHelperTag
         $html .= ViewHelperTableHtml::enableScript();
         $html .= ViewHelperTableHtml::getDonwlodTagA($href);
         
+        list($titles, $values) = ViewHelperTableHtml::getArgs($array);
+        
         // header row
-        $html .= $this->getThead($array);
+        $html .= $this->getThead($titles);
 
         // data rows
         $html .= $this->getTbody($array);
 
         // finish table and return it
-        $html .= $this->getTfoot($array);
+        $html .= $this->getTfoot($titles);
         
         return $this->contentTag('table', $html, [
             'id' => 'parseTable'
@@ -30,13 +32,12 @@ class ViewHelperTable extends ViewHelperTag
     
     public function getThead($array) {
         $html = '';
-        list($titles, $values) = ViewHelperTableHtml::getArgs($array);
         
         //If title was set then writ
         if (is_array($array)) {
             $html .= "\n  ".$this->tableTag('thead');
             $html .= "\n        ".$this->tableTag('tr');
-            foreach ($titles as $title) {
+            foreach ($array[0] as $title) {
                 $html .= "\n	" .$this->contentTag('th', $title); 
             }
             $html .= "\n	".$this->tableTag('tr', '/');
@@ -47,13 +48,12 @@ class ViewHelperTable extends ViewHelperTag
     
     public function getTfoot($array) {
         $html = '';
-        list($titles, $values) = ViewHelperTableHtml::getArgs($array);
         
         //If title was set then writ
         if (is_array($array)) {
             $html .= "\n  ".$this->tableTag('tfoot');
             $html .= "\n        ".$this->tableTag('tr');
-            foreach ($titles as $title) {
+            foreach ($array[0] as $title) {
                 $html .= "\n	" .$this->contentTag('th', $title); 
             }
             $html .= "\n	".$this->tableTag('tr', '/');
@@ -64,17 +64,17 @@ class ViewHelperTable extends ViewHelperTag
     
     public function getTbody($array) {
         $html = '';
-        list($titles, $values) = ViewHelperTableHtml::getArgs($array);
         
         //If title was set then writ
         if (is_array($array)) {
             $html .= "\n  ".$this->tableTag('tbody');
+            foreach ($array as $values) {
                 $html .= "\n        ".$this->tableTag('tr');
                     foreach ($values as $info) {
                         $html .= "\n	" .$this->contentTag('td', $info); 
                     }
                 $html .= "\n	".$this->tableTag('tr', '/');
-            
+            }
             $html .= "\n  ".$this->tableTag('tbody', '/');
             
         }
