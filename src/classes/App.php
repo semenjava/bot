@@ -50,7 +50,8 @@ class App
         } 
 
         if(!empty($this->response->errors[0])) {
-            return implode("\n", $this->response->errors);
+            $errors['Errors'] =  $this->response->errors;
+            dnl($errors);
         }
 
         return $this->router->run();
