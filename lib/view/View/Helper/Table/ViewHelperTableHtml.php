@@ -30,7 +30,7 @@ class ViewHelperTableHtml {
     }
     
     public static function getDonwlodTagA($href) {
-        return '<div><a href="{$href}">Скачать в csv</a></div>';
+        return '<div><a href="'.$href.'">Скачать в csv</a></div>';
     }
 }
 
